@@ -1,0 +1,13 @@
+Flask
+pyautogen
+ollama
+itakello-logging
+pymongo
+inquirer3
+prompt_toolkit
+nltk
+inflect
+pytest
+pytest-mock
+python-dotenv
+asyncio
