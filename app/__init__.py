@@ -1,16 +1,12 @@
 from flask import Flask
-from pymongo import MongoClient
+
+from .core.database_manager import DatabaseManager
 
 
 def create_app():
-    app = Flask(__name__)
-    app.config["MONGO_URI"] = (
-        "mongodb://localhost:27017/your_database"  # Update with your actual MongoDB URI
-    )
+    app = Flask(__name__, template_folder="../templates")
 
-    # Initialize MongoDB client
-    client = MongoClient(app.config["MONGO_URI"])
-    app.db = client.get_default_database()
+    app.config["DB_MANAGER"] = DatabaseManager()
 
     with app.app_context():
         from .routes import initialize_routes
