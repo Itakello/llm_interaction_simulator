@@ -12,4 +12,4 @@ python-dotenv
 asyncio
 Flask
 Flask-Login
-Flask-Bcrypt
+Werkzeug

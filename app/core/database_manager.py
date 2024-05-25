@@ -1,6 +1,7 @@
 import os
 from dataclasses import dataclass, field
 
+from bson.objectid import ObjectId
 from pymongo import MongoClient
 from pymongo.database import Database
 from pymongo.errors import (
@@ -9,6 +10,8 @@ from pymongo.errors import (
     ServerSelectionTimeoutError,
 )
 from pymongo.server_api import ServerApi
+
+from ..models.user import User
 
 
 @dataclass
@@ -55,3 +58,21 @@ class DatabaseManager:
     def _select_database(self, client: MongoClient) -> Database:
         selected_db = os.getenv("DB_NAME", "default_db")
         return client[selected_db]
+
+    def get_user_by_username(self, username: str) -> User | None:
+        user_data = self.db.users.find_one({"username": username})
+        if user_data:
+            return User.from_document(user_data)
+        return None
+
+    def get_user_by_id(self, user_id: str) -> User | None:
+        user_data = self.db.users.find_one({"_id": ObjectId(user_id)})
+        if user_data:
+            return User.from_document(user_data)
+        return None
+
+    def insert_user(self, user: User) -> None:
+        self.db.users.insert_one(user.to_document())
+
+    def insert_data(self, collection_name: str, data: str) -> None:
+        self.db[collection_name].insert_one(data)

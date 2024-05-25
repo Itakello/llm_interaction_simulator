@@ -1,16 +1,13 @@
-import os
-
 from flask import current_app, redirect, render_template, request, url_for
 from werkzeug.wrappers.response import Response
 
 from .core.database_manager import DatabaseManager
 
 
-def initialize_routes(app):
+def initialize_routes(app) -> None:
 
     @app.route("/")
     def index() -> str:
-        print(os.getcwd())
         return render_template("index.html")
 
     @app.route("/submit", methods=["POST"])
