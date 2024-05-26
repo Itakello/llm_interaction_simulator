@@ -89,3 +89,7 @@ class DatabaseManager(BaseManager):
         }
         logger.debug(f"Experiments retrieved: {len(experiments)}")
         return experiments
+
+    def save_experiment(self, experiment: Experiment) -> None:
+        self.db.experiments.insert_one(experiment.to_document())
+        logger.debug(f"Experiment saved with ID: {experiment.id}")

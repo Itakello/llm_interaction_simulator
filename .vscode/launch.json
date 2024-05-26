@@ -21,6 +21,22 @@
             "console": "integratedTerminal",
             "cwd": "${workspaceFolder}",
             "justMyCode": false
+        },
+        {
+            "name": "Python: Flask",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/run.py",
+            "env": {
+                "FLASK_APP": "run.py",
+                "FLASK_ENV": "development"
+            },
+            "args": [
+                "run",
+                "--no-debugger",
+                "--no-reload"
+            ],
+            "jinja": true
         }
     ]
 }

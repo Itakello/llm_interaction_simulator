@@ -4,12 +4,49 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
-    <title>{% block title %}My App{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <title>{% block title %}{% endblock %}</title>
+    <style>
+        .content-column {
+            height: 100px;
+        }
+        .scrollable-content {
+            height: 100px;
+            overflow-y: auto;
+        }
+        .fixed-table {
+            display: table;
+            width: 100%;
+        }
+        .fixed-col {
+            display: table-cell;
+            position: sticky;
+            left: 0;
+            background-color: white;
+            z-index: 1;
+        }
+        .fixed-col-2 {
+            display: table-cell;
+            position: sticky;
+            left: 100px; /* Adjust based on the width of the first column */
+            background-color: white;
+            z-index: 1;
+        }
+        .scrollable-roles {
+            overflow-x: auto;
+            display: inline-block;
+            white-space: nowrap;
+        }
+        .table th, .table td {
+            vertical-align: middle;
+        }
+    </style>
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <a class="navbar-brand" href="/">My App</a>
-        <div class="collapse navbar-collapse">
+        <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ml-auto">
                 {% if current_user.is_authenticated %}
                     <li class="nav-item">
@@ -26,23 +63,21 @@
             </ul>
         </div>
     </nav>
-    <div class="container mt-4">
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                {% for category, message in messages %}
-                    <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
-                        {{ message }}
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                {% endfor %}
-            {% endif %}
-        {% endwith %}
+    <div class="container-fluid">
         {% block content %}{% endblock %}
     </div>
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <script src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.22/js/dataTables.bootstrap4.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.22/css/dataTables.bootstrap4.min.css">
+
+    <script>
+        $(document).ready(function() {
+            $('#experimentsTable').DataTable();
+            $('.select2').select2();
+        });
+    </script>
 </body>
 </html>

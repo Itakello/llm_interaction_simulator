@@ -11,7 +11,7 @@ from flask_login import login_required, login_user, logout_user
 from werkzeug import Response
 from werkzeug.security import check_password_hash, generate_password_hash
 
-from ..core.database_manager import DatabaseManager
+from ..managers.database_manager import DatabaseManager
 from ..models.user import User
 
 user_bp = Blueprint("user", __name__)

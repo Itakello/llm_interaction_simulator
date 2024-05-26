@@ -26,7 +26,8 @@ class LLM(MongoModel):
         self.model = self.model.lower()
         if ":" not in self.model:
             self.model = f"{self.model}:latest"
-        self.create_custom_model()
+        self.name = self._create_name()
+        # self.create_custom_model()
         self.config = {
             "model": self.name,
             "base_url": "http://localhost:11434/v1",
@@ -93,7 +94,6 @@ class LLM(MongoModel):
             )
             asyncio.run(self._download_model())
             logger.confirmation(f"Model [{self.model}] pulled successfully")
-        self.name = self._create_name()
         if self.name not in curr_models:
             self._create_vai_modelfile()
             logger.debug(f"Model [{self.name}] created successfully")

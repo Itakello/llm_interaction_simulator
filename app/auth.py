@@ -1,7 +1,7 @@
 from flask import current_app
 from flask_login import LoginManager
 
-from .core.database_manager import DatabaseManager
+from .managers.database_manager import DatabaseManager
 from .models.user import User
 
 login_manager = LoginManager()

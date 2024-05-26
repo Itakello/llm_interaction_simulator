@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sortable List with Bootstrap and Icons</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome for icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <!-- Sortable.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.js"></script>
+    <style>
+        body {
+            padding: 20px;
+        }
+        .sortable-handle {
+            cursor: move;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2 class="my-4">Sortable List with Icons</h2>
+        <ul id="sortable-list" class="list-group">
+            <li class="list-group-item d-flex align-items-center">
+                <i class="fas fa-bars mr-3 sortable-handle"></i>
+                Item 1
+            </li>
+            <li class="list-group-item d-flex align-items-center">
+                <i class="fas fa-bars mr-3 sortable-handle"></i>
+                Item 2
+            </li>
+            <li class="list-group-item d-flex align-items-center">
+                <i class="fas fa-bars mr-3 sortable-handle"></i>
+                Item 3
+            </li>
+            <li class="list-group-item d-flex align-items-center">
+                <i class="fas fa-bars mr-3 sortable-handle"></i>
+                Item 4
+            </li>
+        </ul>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            new Sortable(document.getElementById('sortable-list'), {
+                handle: '.sortable-handle',
+                animation: 150
+            });
+        });
+    </script>
+</body>
+</html>

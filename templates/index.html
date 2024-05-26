@@ -4,6 +4,7 @@
 
 {% block content %}
 <h1>Available Experiments</h1>
+<a href="{{ url_for('experiment_bp.create_experiment') }}" class="btn btn-primary mb-3">Create New Experiment</a>
 <table id="experimentsTable" class="table table-striped table-bordered">
     <thead>
         <tr>
