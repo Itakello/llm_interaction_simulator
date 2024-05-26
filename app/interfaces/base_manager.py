@@ -10,4 +10,4 @@ logger = ItakelloLogging().get_logger(__name__)
 class BaseManager(ABC):
 
     def __post_init__(self) -> None:
-        logger.debug(f"--{self.__class__.__name__} initialized--")
+        logger.debug(f"-- {self.__class__.__name__} initialized-- ")

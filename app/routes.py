@@ -8,7 +8,9 @@ def initialize_routes(app) -> None:
 
     @app.route("/")
     def index() -> str:
-        return render_template("index.html")
+        db_manager: DatabaseManager = current_app.config["DB_MANAGER"]
+        experiments = db_manager.get_experiments()
+        return render_template("index.html", experiments=experiments)
 
     @app.route("/submit", methods=["POST"])
     def submit() -> Response:

@@ -1,12 +1,44 @@
 {% extends "base.html" %}
+
 {% block title %}Home{% endblock %}
+
 {% block content %}
-    <h1>Welcome to the Flask Web Interface</h1>
-    <form action="/submit" method="post">
-        <div class="form-group">
-            <label for="data">Enter some data:</label>
-            <input type="text" class="form-control" name="data" id="data" placeholder="Enter some data">
-        </div>
-        <button type="submit" class="btn btn-primary">Submit</button>
-    </form>
+<h1>Available Experiments</h1>
+<table id="experimentsTable" class="table table-striped table-bordered">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Creator</th>
+            <th>Creation Date</th>
+            <th>Roles</th>
+            <th>Number of Conversations</th>
+            <th>LLMs</th>
+            <th>Note</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for experiment in experiments.values() %}
+        <tr>
+            <td>{{ experiment.id }}</td>
+            <td>{{ experiment.creator }}</td>
+            <td>{{ experiment.creation_date.strftime('%Y-%m-%d') }}</td>
+            <td>{{ experiment.roles | join(', ') }}</td>
+            <td>{{ experiment.conversation_ids | length }}</td>
+            <td>{{ experiment.llms | join(', ') }}</td>
+            <td>{{ experiment.note }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+<script src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.10.22/js/dataTables.bootstrap4.min.js"></script>
+<link rel="stylesheet" href="https://cdn.datatables.net/1.10.22/css/dataTables.bootstrap4.min.css">
+
+<script>
+$(document).ready(function() {
+    $('#experimentsTable').DataTable();
+});
+</script>
 {% endblock %}

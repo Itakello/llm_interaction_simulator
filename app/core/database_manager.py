@@ -2,6 +2,7 @@ import os
 from dataclasses import dataclass, field
 
 from bson.objectid import ObjectId
+from itakello_logging import ItakelloLogging
 from pymongo import MongoClient
 from pymongo.database import Database
 from pymongo.errors import (
@@ -11,11 +12,15 @@ from pymongo.errors import (
 )
 from pymongo.server_api import ServerApi
 
+from ..interfaces.base_manager import BaseManager
+from ..models.experiment import Experiment
 from ..models.user import User
+
+logger = ItakelloLogging().get_logger(__name__)
 
 
 @dataclass
-class DatabaseManager:
+class DatabaseManager(BaseManager):
     username: str = field(init=False)
     password: str = field(init=False)
     cluster_url: str = field(init=False)
@@ -28,6 +33,7 @@ class DatabaseManager:
         self.cluster_url = os.getenv("DB_CLUSTER_URL", "default_cluster_url")
         self.client = self._connect_to_database()
         self.db = self._select_database(self.client)
+        super().__post_init__()
 
     def _connect_to_database(self) -> MongoClient:
         try:
@@ -57,6 +63,7 @@ class DatabaseManager:
 
     def _select_database(self, client: MongoClient) -> Database:
         selected_db = os.getenv("DB_NAME", "default_db")
+        logger.debug(f"Selected database: {selected_db}")
         return client[selected_db]
 
     def get_user_by_username(self, username: str) -> User | None:
@@ -73,6 +80,12 @@ class DatabaseManager:
 
     def insert_user(self, user: User) -> None:
         self.db.users.insert_one(user.to_document())
+        logger.debug(f"User inserted: {user}")
 
-    def insert_data(self, collection_name: str, data: str) -> None:
-        self.db[collection_name].insert_one(data)
+    def get_experiments(self) -> dict[str, Experiment]:
+        experiment_docs = list(self.db.experiments.find())
+        experiments = {
+            str(doc["_id"]): Experiment.from_document(doc) for doc in experiment_docs
+        }
+        logger.debug(f"Experiments retrieved: {len(experiments)}")
+        return experiments
