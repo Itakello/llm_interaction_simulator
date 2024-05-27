@@ -1,0 +1,20 @@
+.fixed-column {
+    width: 200px;
+}
+
+.content-cell {
+    width: calc(100% - 200px);
+}
+
+.shared-cell {
+    width: 100%;
+}
+
+.scrollable-content {
+    height: 100px;
+    overflow-y: auto;
+}
+
+.role-input {
+    width: 70%;
+}

@@ -1,0 +1,10 @@
+<div class="d-flex flex-column">
+    <input type="text" class="form-control mb-2 section-input" name="sections[]" placeholder="Section" required>
+    <div class="d-flex align-items-center justify-content-between">
+        <select class="form-control section-type mr-2" name="section_type[]" style="width: 100px;">
+            <option value="private" selected>Private</option>
+            <option value="shared">Shared</option>
+        </select>
+        {% include 'components/button.html' %}
+    </div>
+</div>

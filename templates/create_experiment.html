@@ -19,19 +19,13 @@
             <option value="llm1">LLM 1</option>
             <option value="llm2">LLM 2</option>
             <option value="llm3">LLM 3</option>
-            <!-- Add more LLM options as needed -->
         </select>
     </div>
     <div class="form-group">
         <label for="note">Note</label>
         <textarea class="form-control" id="note" name="note" rows="3"></textarea>
     </div>
-    <div class="form-check">
-        <input type="checkbox" class="form-check-input" id="favourite" name="favourite">
-        <label class="form-check-label" for="favourite">Favourite</label>
-    </div>
-
-    <!-- Roles and Sections Table -->
+    {% include 'components/toggle.html' %}
     <div class="form-group">
         <label for="roles-sections">Roles and Sections</label>
         <div class="d-flex flex-column">
@@ -42,9 +36,9 @@
                             <tr>
                                 <th class="fixed-column"></th>
                                 <th>
-                                    <div class="d-flex">
-                                        <input type="text" class="form-control" name="roles[]" placeholder="Role 1" required>
-                                        <button type="button" class="btn btn-danger btn-sm ml-2 remove-role" disabled>Remove</button>
+                                    <div class="role-container d-flex justify-content-between align-items-center">
+                                        <input type="text" class="form-control role-input" name="roles[]" placeholder="Role 1" required>
+                                        <button type="button" class="btn btn-danger btn-sm remove-role" disabled>Remove</button>
                                     </div>
                                 </th>
                             </tr>
@@ -67,23 +61,6 @@
                                     <textarea class="form-control content-column scrollable-content" name="section_content[]" placeholder="Content"></textarea>
                                 </td>
                             </tr>
-                            <tr>
-                                <td class="fixed-column">
-                                    <div class="d-flex flex-column">
-                                        <input type="text" class="form-control mb-2" name="sections[]" placeholder="Section 1" required>
-                                        <div class="d-flex align-items-center justify-content-between">
-                                            <select class="form-control section-type mr-2" name="section_type[]" style="width: 100px;">
-                                                <option value="private" selected>Private</option>
-                                                <option value="shared">Shared</option>
-                                            </select>
-                                            <button type="button" class="btn btn-danger btn-sm remove-section">Remove</button>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="content-cell">
-                                    <textarea class="form-control content-column scrollable-content" name="section_content[]" placeholder="Content"></textarea>
-                                </td>
-                            </tr>
                         </tbody>
                     </table>
                 </div>
@@ -99,6 +76,5 @@
     <button type="submit" class="btn btn-primary">Submit</button>
 </form>
 
-<!-- Link to the external JavaScript file -->
 <script src="{{ url_for('static', filename='js/experiment.js') }}"></script>
 {% endblock %}
