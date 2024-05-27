@@ -9,8 +9,8 @@ from .managers.database_manager import DatabaseManager
 
 
 def create_app() -> Flask:
-    app = Flask(__name__, template_folder="../templates")
-    app.secret_key = os.getenv("SECRET_KEY", "mysecreto")
+    app = Flask(__name__, template_folder="../templates", static_folder="../static")
+    app.secret_key = os.getenv("SECRET_KEY", "mysecret")
 
     app.config["DB_MANAGER"] = DatabaseManager()
 
