@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', function () {
     
     const MAX_ROLES = 5;
-    const MAX_SECTIONS = 11;
+    const MAX_SECTIONS = 10;
 
     function attachRemoveRoleEvent(button) {
         button.addEventListener('click', function() {
@@ -114,7 +114,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const sectionIndex = tbody.children.length;
         const roleCount = table.querySelector('thead tr').children.length - 1;
 
-        if (sectionIndex >= MAX_SECTIONS) {
+        if (sectionIndex >= MAX_SECTIONS+1) {
             alert(`You can only add up to ${MAX_SECTIONS} sections.`);
             return;
         }
@@ -144,3 +144,53 @@ document.addEventListener('DOMContentLoaded', function () {
 
     reconfigureSections();
 });
+
+document.querySelector('form').addEventListener('submit', function(event) {
+        const table = document.getElementById('roles-sections-table');
+        const roles = [];
+        const sections = [];
+
+        table.querySelectorAll('thead tr th').forEach((header, index) => {
+            const roleInput = header.querySelector('.role-input');
+            if (roleInput) {
+                const role = { name: roleInput.value, sections: [] };
+                table.querySelectorAll('tbody tr').forEach(row => {
+                    const sectionType = row.querySelector('.section-type').value;
+                    if (sectionType === 'private') {
+                        const sectionContent = row.querySelectorAll('.content-column')[index - 1].value;
+                        role.sections.push({
+                            index: Array.from(row.parentNode.children).indexOf(row),
+                            title: row.querySelector('.section-input').value,
+                            content: sectionContent,
+                            role: role.name
+                        });
+                    }
+                });
+                roles.push(role);
+            }
+        });
+
+        table.querySelectorAll('tbody tr').forEach(row => {
+            const sectionType = row.querySelector('.section-type').value;
+            if (sectionType === 'shared') {
+                sections.push({
+                    index: Array.from(row.parentNode.children).indexOf(row),
+                    title: row.querySelector('.section-input').value,
+                    content: row.querySelector('.content-column').value
+                });
+            }
+        });
+
+        const data = {
+            creator: document.getElementById('creator').value,
+            starting_message: document.getElementById('starting_message').value,
+            llms: Array.from(document.getElementById('llms').selectedOptions).map(option => option.value),
+            note: document.getElementById('note').value,
+            favourite: document.getElementById('favourite').checked,
+            roles: roles,
+            sections: sections
+        };
+
+        document.getElementById('serialized-data').value = JSON.stringify(data);
+    });
+

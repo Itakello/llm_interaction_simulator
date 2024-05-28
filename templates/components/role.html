@@ -1,4 +1,4 @@
 <div class="d-flex">
-    <input type="text" class="form-control" name="roles[]" placeholder="Role 1" required>
-    <button type="button" class="btn btn-danger btn-sm ml-2 remove-role" {{ disable_remove_button }}>Remove</button>
+    <input type="text" class="form-control" name="roles[]" placeholder="Role {{ role_index }}" required>
+    <button type="button" class="btn btn-danger btn-sm ml-2 remove-role" {% if disable_remove_button %}disabled{% endif %}>Remove</button>
 </div>

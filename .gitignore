@@ -1,8 +1,15 @@
+# Folders
 **/dist/
 **/build/
 **/logs/
 **/experiments/
 **/__pycache__/
+
+# Files
+.cache
+.env
+
+# Extensions
 
 OAI_CONFIG_LIST
 experiment_settings.ini

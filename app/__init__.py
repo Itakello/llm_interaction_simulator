@@ -2,9 +2,8 @@ import os
 
 from flask import Flask
 
-from .auth import login_manager
-from .blueprints.experiment_bp import experiment_bp
-from .blueprints.user_bp import user_bp
+from .auth import init_login_manager
+from .blueprints import register_blueprints
 from .managers.database_manager import DatabaseManager
 
 
@@ -14,11 +13,8 @@ def create_app() -> Flask:
 
     app.config["DB_MANAGER"] = DatabaseManager()
 
-    login_manager.init_app(app)
+    init_login_manager(app)
 
-    with app.app_context():
-        app.register_blueprint(user_bp)
-        login_manager.login_view = "login"  # type: ignore
-        app.register_blueprint(experiment_bp)
+    register_blueprints(app)
 
     return app

@@ -1,3 +1,5 @@
+import json
+
 from flask import Blueprint, current_app, redirect, render_template, request, url_for
 from flask_login import login_required
 from werkzeug import Response
@@ -5,14 +7,14 @@ from werkzeug import Response
 from ..managers.database_manager import DatabaseManager
 from ..models.experiment import Experiment
 from ..models.llm import LLM
-
-# from ..models.role import Role
+from ..models.role import Role
+from ..models.section import Section
+from ..utility.enums import SectionType
 
 experiment_bp = Blueprint("experiment_bp", __name__)
 
 
 @experiment_bp.route("/", methods=["GET"])
-@login_required
 @login_required
 def index() -> str:
     db_manager: DatabaseManager = current_app.config["DB_MANAGER"]
@@ -23,29 +25,49 @@ def index() -> str:
 @experiment_bp.route("/experiment/create", methods=["GET", "POST"])
 @login_required
 def create_experiment() -> Response | str:
+    db_manager: DatabaseManager = current_app.config["DB_MANAGER"]
     if request.method == "POST":
-        db_manager: DatabaseManager = current_app.config["DB_MANAGER"]
 
-        creator = db_manager.username
-        starting_message = request.form["starting_message"]
-        note = request.form["note"]
-        favourite = "favourite" in request.form
-        llms = request.form.getlist("llms")
+        data = json.loads(request.form["serialized_data"])
+
+        # TODO parse sections and roles
+        roles = [
+            Role(
+                name=role["name"],
+                sections_list=[
+                    Section(type=SectionType("Private"), **section)
+                    for section in role["sections"]
+                ],
+            )
+            for role in data["roles"]
+        ]
+        llms = [LLM(model=llm) for llm in data["llms"]]
+        shared_sections = [
+            Section(type=SectionType("Shared"), **section)
+            for section in data["sections"]
+        ]
 
         experiment = Experiment(
-            starting_message=starting_message,
-            note=note,
-            favourite=favourite,
-            creator=creator,
-            llms_list=[LLM(model=llm) for llm in llms],
-            roles_list=[],
-            shared_sections_list=[],
-            summarizer_sections_list=[],
-            placeholders_list=[],
-            conversation_ids=[],
+            starting_message=data["starting_message"],
+            note=data["note"],
+            favourite=data["favourite"],
+            creator=data["creator"],
+            llms_list=llms,
+            roles_list=roles,
+            shared_sections_list=shared_sections,
         )
 
         db_manager.save_experiment(experiment)
-        return redirect(url_for("experiment.list_experiments"))
+        return redirect(url_for("experiment_bp.index"))
 
-    return render_template("create_experiment.html")
+    context = {
+        "creator": db_manager.username,
+        "starting_message": "Initiate the experiment",
+        "llms": [
+            {"value": "llm1", "label": "LLM 1", "selected": False},
+            {"value": "llm2", "label": "LLM 2", "selected": False},
+            {"value": "llm3", "label": "LLM 3", "selected": False},
+        ],
+    }
+
+    return render_template("create_experiment.html", **context)

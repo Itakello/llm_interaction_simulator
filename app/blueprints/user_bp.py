@@ -47,7 +47,7 @@ def login() -> Response | str:
         user = db_manager.get_user_by_username(username)
         if user and check_password_hash(user.password, password):
             login_user(user)
-            return redirect(url_for("index"))
+            return redirect(url_for("experiment_bp.index"))
 
         flash("Invalid username or password")
         return redirect(url_for("user.login"))

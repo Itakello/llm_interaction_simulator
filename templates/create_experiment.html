@@ -1,31 +1,34 @@
 {% extends "base.html" %}
 
-{% block title %}Create/Update Experiment{% endblock %}
+{% block title %}Create Experiment{% endblock %}
 
 {% block content %}
-<h1>Create or Update Experiment</h1>
+<h1>Create Experiment</h1>
 <form method="post" action="{{ url_for('experiment_bp.create_experiment') }}">
     <div class="form-group">
         <label for="creator">Creator</label>
-        <input type="text" class="form-control" id="creator" name="creator" required>
+        <input type="text" class="form-control" id="creator" name="creator" value="{{ creator }}" disabled>
     </div>
     <div class="form-group">
         <label for="starting_message">Starting Message</label>
-        <textarea class="form-control" id="starting_message" name="starting_message" rows="3" required></textarea>
+        <textarea class="form-control" id="starting_message" name="starting_message" rows="3" placeholder="{{ starting_message }}" required></textarea>
     </div>
     <div class="form-group">
         <label for="llms">LLMs</label>
         <select class="form-control select2" id="llms" name="llms" multiple="multiple" required>
-            <option value="llm1">LLM 1</option>
-            <option value="llm2">LLM 2</option>
-            <option value="llm3">LLM 3</option>
+            {% for llm in llms %}
+            <option value="{{ llm.value }}" {% if llm.selected %}selected{% endif %}>{{ llm.label }}</option>
+            {% endfor %}
         </select>
     </div>
     <div class="form-group">
         <label for="note">Note</label>
         <textarea class="form-control" id="note" name="note" rows="3"></textarea>
     </div>
-    {% include 'components/toggle.html' %}
+    <div class="form-check">
+        <input type="checkbox" class="form-check-input" id="favourite" name="favourite">
+        <label class="form-check-label" for="favourite">Favourite</label>
+    </div>
     <div class="form-group">
         <label for="roles-sections">Roles and Sections</label>
         <div class="d-flex flex-column">
@@ -47,7 +50,7 @@
                             <tr>
                                 <td class="fixed-column">
                                     <div class="d-flex flex-column">
-                                        <input type="text" class="form-control mb-2" name="sections[]" placeholder="Starting prompt" readonly>
+                                        <input type="text" class="form-control mb-2 section-input" name="sections[]" placeholder="Starting prompt" value="Starting prompt", readonly>
                                         <div class="d-flex align-items-center justify-content-between">
                                             <select class="form-control section-type mr-2" name="section_type[]" style="width: 100px;">
                                                 <option value="private" selected>Private</option>
@@ -68,11 +71,12 @@
                     <button type="button" class="btn btn-secondary btn-sm" id="add-role">Add Role</button>
                 </div>
             </div>
-            <div class="mt-2 align-self-start">
+            <div class="align-self-start ml-2">
                 <button type="button" class="btn btn-secondary btn-sm" id="add-section">Add Section</button>
             </div>
         </div>
     </div>
+    <input type="hidden" id="serialized-data" name="serialized_data" value="">
     <button type="submit" class="btn btn-primary">Submit</button>
 </form>
 

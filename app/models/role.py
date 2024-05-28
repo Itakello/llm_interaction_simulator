@@ -1,4 +1,4 @@
-from dataclasses import dataclass, field
+from dataclasses import InitVar, dataclass, field
 
 from itakello_logging import ItakelloLogging
 
@@ -12,22 +12,24 @@ logger = ItakelloLogging().get_logger(__name__)
 @dataclass
 class Role(MongoModel):
     name: str
-    sections: dict[str, Section] = field(default_factory=dict)
-    placeholders: dict[str, Placeholder] = field(default_factory=dict)
 
-    def __init__(
-        self,
-        name: str,
-        sections: list[Section],
-        placeholders: list[Placeholder] = [],
+    sections_list: InitVar[list[Section]]
+    placeholders_list: InitVar[list[Placeholder]] = field(default=[])
+
+    sections: dict[str, Section] = field(init=False)
+    placeholders: dict[str, Placeholder] = field(init=False)
+
+    def __post_init__(
+        self, sections_list: list[Section], placeholders_list: list[Placeholder]
     ) -> None:
-        self.name = name
-        self.sections = {section.title: section for section in sections}
-        if not placeholders:
-            placeholders = self._create_starting_placeholders()
+        if not placeholders_list:
+            placeholders_list = self._create_starting_placeholders()
+
         self.placeholders = {
-            placeholder.tag: placeholder for placeholder in placeholders
+            placeholder.tag: placeholder for placeholder in placeholders_list
         }
+        self.sections = {section.title: section for section in sections_list}
+
         logger.debug(
             f"Created new role [{self.name}] with:\n"
             + f"- {len(self.sections)} private sections\n"
@@ -51,8 +53,10 @@ class Role(MongoModel):
     def from_document(cls, doc: dict) -> "Role":
         return cls(
             name=doc["name"],
-            sections=[Section.from_document(section) for section in doc["sections"]],
-            placeholders=[
+            sections_list=[
+                Section.from_document(section) for section in doc["sections"]
+            ],
+            placeholders_list=[
                 Placeholder.from_document(placeholder)
                 for placeholder in doc["placeholders"]
             ],
@@ -79,7 +83,5 @@ class Role(MongoModel):
         return [
             Placeholder(tag=f"<{self.name.upper()}_NOUN>"),
             Placeholder(tag=f"<{self.name.upper()}_POSS>"),
-            # Placeholder(tag=f"<{self.name.upper()}_POSSPRON>"),
-            # Placeholder(tag=f"<{self.name.upper()}_PRON>"),
             Placeholder(tag=f"<{self.name.upper()}_NUM>"),
         ]

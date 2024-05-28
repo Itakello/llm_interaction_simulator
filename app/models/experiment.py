@@ -19,26 +19,25 @@ class Experiment(MongoModel):
 
     llms: dict[str, LLM] = field(init=False)
     roles: dict[str, Role] = field(init=False)
-    shared_sections: dict[str, Section] = field(init=False)
-    summarizer_sections: dict[str, Section] = field(init=False)
+    sections: dict[str, Section] = field(init=False)
+    # summarizer_sections: dict[str, Section] = field(init=False)
     placeholders: dict[str, Placeholder] = field(init=False)
-
-    llms_list: InitVar[list[LLM]]
-    roles_list: InitVar[list[Role]]
-    shared_sections_list: InitVar[list[Section]]
-    summarizer_sections_list: InitVar[list[Section]]
-    placeholders_list: InitVar[list[Placeholder]] = field(default=[])
-
     conversation_ids: list[ObjectId] = field(default_factory=list)
     id: ObjectId = field(default_factory=ObjectId)
     creation_date: datetime = field(default_factory=datetime.now)
+
+    llms_list: InitVar[list[LLM]] = field(default=[])
+    roles_list: InitVar[list[Role]] = field(default=[])
+    shared_sections_list: InitVar[list[Section]] = field(default=[])
+    # summarizer_sections_list: InitVar[list[Section]]
+    placeholders_list: InitVar[list[Placeholder]] = field(default=[])
 
     def __post_init__(
         self,
         llms_list: list[LLM],
         roles_list: list[Role],
         shared_sections_list: list[Section],
-        summarizer_sections_list: list[Section],
+        # summarizer_sections_list: list[Section],
         placeholders_list: list[Placeholder],
     ) -> None:
         self.llms = {llm.name: llm for llm in llms_list}
@@ -46,9 +45,9 @@ class Experiment(MongoModel):
         self.shared_sections = {
             section.title: section for section in shared_sections_list
         }
-        self.summarizer_sections = {
-            section.title: section for section in summarizer_sections_list
-        }
+        # self.summarizer_sections = {
+        #    section.title: section for section in summarizer_sections_list
+        # }
         if not placeholders_list:
             placeholders_list = self._create_starting_placeholders()
         self.placeholders = {
@@ -70,9 +69,9 @@ class Experiment(MongoModel):
             shared_sections_list=[
                 Section.from_document(section) for section in doc["shared_sections"]
             ],
-            summarizer_sections_list=[
-                Section.from_document(section) for section in doc["summarizer_sections"]
-            ],
+            # summarizer_sections_list=[
+            # Section.from_document(section) for section in doc["summarizer_sections"]
+            # ],
             placeholders_list=[
                 Placeholder.from_document(placeholder)
                 for placeholder in doc["placeholders"]
@@ -94,9 +93,9 @@ class Experiment(MongoModel):
             "shared_sections": [
                 section.to_document() for section in self.shared_sections.values()
             ],
-            "summarizer_sections": [
-                section.to_document() for section in self.summarizer_sections.values()
-            ],
+            # "summarizer_sections": [
+            # section.to_document() for section in self.summarizer_sections.values()
+            # ],
             "placeholders": [
                 placeholder.to_document() for placeholder in self.placeholders.values()
             ],

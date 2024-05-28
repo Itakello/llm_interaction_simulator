@@ -14,7 +14,6 @@ class Section(MongoModel):
     title: str
     content: str
     type: SectionType
-    to_reset: bool = False
     role: str = ""
 
     def __post_init__(self) -> None:
