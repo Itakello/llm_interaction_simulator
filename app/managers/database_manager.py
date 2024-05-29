@@ -13,6 +13,7 @@ from pymongo.errors import (
 from pymongo.server_api import ServerApi
 
 from ..interfaces.base_manager import BaseManager
+from ..models.conversation import Conversation
 from ..models.experiment import Experiment
 from ..models.user import User
 
@@ -66,6 +67,8 @@ class DatabaseManager(BaseManager):
         logger.debug(f"Selected database: {selected_db}")
         return client[selected_db]
 
+    # --------------------- Users ---------------------
+
     def get_user_by_username(self, username: str) -> User | None:
         user_data = self.db.users.find_one({"username": username})
         if user_data:
@@ -82,6 +85,8 @@ class DatabaseManager(BaseManager):
         self.db.users.insert_one(user.to_document())
         logger.debug(f"User inserted: {user}")
 
+    # --------------------- Experiments ---------------------
+
     def get_experiments(self) -> dict[str, Experiment]:
         experiment_docs = list(self.db.experiments.find())
         experiments = {
@@ -90,6 +95,37 @@ class DatabaseManager(BaseManager):
         logger.debug(f"Experiments retrieved: {len(experiments)}")
         return experiments
 
+    def get_experiment(self, experiment_id: str) -> Experiment:
+        experiment_data = self.db.experiments.find_one({"_id": ObjectId(experiment_id)})
+        if not experiment_data:
+            raise ValueError(f"Experiment with ID {experiment_id} not found")
+        experiment = Experiment.from_document(experiment_data)
+        logger.debug(f"Experiment retrieved with ID: {experiment_id}")
+        return experiment
+
     def save_experiment(self, experiment: Experiment) -> None:
         self.db.experiments.insert_one(experiment.to_document())
         logger.debug(f"Experiment saved with ID: {experiment.id}")
+
+    def update_experiment(self, experiment: Experiment) -> None:
+        self.db.experiments.update_one(
+            {"_id": experiment.id},
+            {"$set": experiment.to_document()},
+        )
+        logger.debug(f"Experiment updated with ID: {experiment.id}")
+
+    # --------------------- Conversations ---------------------
+
+    def get_conversations(
+        self, conversation_ids: list[ObjectId]
+    ) -> dict[str, Conversation]:
+        # Retrieve the conversations from the database
+        conversation_docs = list(
+            self.db.conversations.find({"_id": {"$in": conversation_ids}})
+        )
+        conversations = {
+            str(doc["_id"]): Conversation.from_document(doc)
+            for doc in conversation_docs
+        }
+        logger.debug(f"Conversations retrieved: {len(conversation_docs)}")
+        return conversations

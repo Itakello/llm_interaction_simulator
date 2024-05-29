@@ -22,7 +22,7 @@
         <tr>
             <td>{{ experiment.id }}</td>
             <td>{{ experiment.creator }}</td>
-            <td>{{ experiment.creation_date.strftime('%Y-%m-%d') }}</td>
+            <td>{{ experiment.creation_date.strftime('%Y-%m-%d %H:%M:%S') }}</td>
             <td>{{ experiment.roles | join(', ') }}</td>
             <td>{{ experiment.conversation_ids | length }}</td>
             <td>{{ experiment.llms | join(', ') }}</td>

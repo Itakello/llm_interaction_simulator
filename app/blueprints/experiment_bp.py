@@ -1,6 +1,14 @@
 import json
 
-from flask import Blueprint, current_app, redirect, render_template, request, url_for
+from flask import (
+    Blueprint,
+    current_app,
+    flash,
+    redirect,
+    render_template,
+    request,
+    url_for,
+)
 from flask_login import login_required
 from werkzeug import Response
 
@@ -71,3 +79,18 @@ def create_experiment() -> Response | str:
     }
 
     return render_template("create_experiment.html", **context)
+
+
+@experiment_bp.route("/experiment/<str:id_experiment>", methods=["GET", "POST"])
+@login_required
+def experiment_detail(id_experiment: str) -> str:
+    db_manager: DatabaseManager = current_app.config["DB_MANAGER"]
+    experiment = db_manager.get_experiment(id_experiment)
+    if request.method == "POST":
+        # Handle form submission for updating metadata
+        experiment.note = request.form["note"]
+        experiment.favourite = "favourite" in request.form
+        db_manager.update_experiment(experiment)
+        flash("Experiment updated successfully!", "success")
+    conversations = db_manager.get_conversations(id_experiment)
+    return render_template("experiment_detail.html", experiment=experiment)
