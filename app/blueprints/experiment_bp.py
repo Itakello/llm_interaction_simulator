@@ -81,7 +81,7 @@ def create_experiment() -> Response | str:
     return render_template("create_experiment.html", **context)
 
 
-@experiment_bp.route("/experiment/<str:id_experiment>", methods=["GET", "POST"])
+"""@experiment_bp.route("/experiment/<str:id_experiment>", methods=["GET", "POST"])
 @login_required
 def experiment_detail(id_experiment: str) -> str:
     db_manager: DatabaseManager = current_app.config["DB_MANAGER"]
@@ -93,4 +93,4 @@ def experiment_detail(id_experiment: str) -> str:
         db_manager.update_experiment(experiment)
         flash("Experiment updated successfully!", "success")
     conversations = db_manager.get_conversations(id_experiment)
-    return render_template("experiment_detail.html", experiment=experiment)
+    return render_template("experiment_detail.html", experiment=experiment)"""
